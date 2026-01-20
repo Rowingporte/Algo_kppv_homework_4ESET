@@ -16,12 +16,12 @@ void Data::aspire_les_donnees(std::ifstream& file) {
     vector<double> tabFeatures;
     string line;
 
-    file >> _nb_samples >> _nb_features;
+    file >> _nbSamples >> _nbFeatures;
 
-    for (int i = 0; i < _nb_samples; i++) {
+    for (int i = 0; i < _nbSamples; i++) {
         tabFeatures.clear();
         file >> tag;
-        for (int j = 0; j < _nb_features; j++) {
+        for (int j = 0; j < _nbFeatures; j++) {
             file >> feature;
             tabFeatures.push_back(feature);
         }
@@ -35,14 +35,14 @@ void Data::add(int tag, const vector<double>& features) {
 }
 
 void Data::toString() const {
-    for (int i = 0 ; i < _nb_samples; i++) {
+    for (int i = 0 ; i < _nbSamples; i++) {
         cout << "Sample " << i << " :" << endl;
         _data[i].toString();
     }
 }
 
 Sample Data::operator[](int index) {
-    if (index < 0 || index >= _nb_samples) { throw std::out_of_range("Index hors des limites"); }
+    if (index < 0 || index >= _nbSamples) { throw std::out_of_range("Index hors des limites"); }
     return _data[index];
 }
 

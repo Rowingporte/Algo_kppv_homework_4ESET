@@ -1,35 +1,26 @@
-// arno qui fait
 #include "knn.h"
 
-Knn::Knn(int kValue) : k(kValue) {};
+// A refaire
 
-knn::~Knn() {};
-
-virtual vector<Sample> knn::predict(Data* test_data) {
+virtual vector<Sample> Knn::predict(Data* test_data) {
     vector<Sample> result;
     for (int i = 0; i < test_data->nbSamples(); ++i) {
-        result.push_back(predictSingle(test_data->getSample(i)));
+        result.push_back(predictSingle(test_data[i]));
     }
     return result;
 }
 
-virtual knn::lazy_train(Data* trainData) {
-    _trainData = trainData;
-}
-
 vector<pair<double, int>> Knn::getKnn(const Sample& sample) {
     vector<pair<double, int>> distances;
-    for (int i = 0; i < _trainData->nbSamples(); ++i) {
-        const Sample& trainSample = _trainData->getSample(i);
+    for (int i = 0; i < _lazy_train->nbSamples(); ++i) {
+        const Sample& trainSample = _lazy_train->getSample(i);
         double dist = similarity(sample, trainSample);
-        distances.push_back({dist, trainSample.tag()});
+        distances.push_back({dist, trainSample.get_tag()});
     }
 
     sort(distances.begin(), distances.end());
 
-    if (distances.size() > (size_t)_k) {
-        distances.resize(_k);
-    }
+    if (distances.size() > (size_t)_k) { distances.resize(_k); }
     return distances;
 }
 
@@ -50,11 +41,9 @@ virtual void Knn::predictSingle(const Sample& sample) {
     sample.setPredictedTag(bestTag);
 }   
 
-virtual void Knn::similarity(Sample a, Sample b) {
-    sum = 0;
-    for(int i =0; i < a.size(); i++){
-        sum += (a[i] - b[i]) * (a[i] - b[i]);
-    }
+virtual double Knn::similarity(Sample a, Sample b) {
+    double sum = 0;
+    for(int i = 0 ; i < a.size() ; i++) { sum += (a[i] - b[i]) * (a[i] - b[i]); }
     return sqrt(sum);
 }
 

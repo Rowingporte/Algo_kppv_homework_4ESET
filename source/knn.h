@@ -1,20 +1,30 @@
-// arno qui fait
 #ifndef KNN_H
 #define KNN_H
 
 #include <iostream>
-using namespace std;
+#include <vector>
+#include <utility>
+#include <map>
+#include <algorithm>
+#include <cmath>
+#include <Sample.h>
+#include <Data.h>
+
+using std::vector;
+using std::pair;
+using std::map;
 
 class Knn {
-private:
     int k;
+    Data _lazy_train;
 public:
-    Knn(int kValue);
-    ~Knn();
-    virtual vector<Sample> knn::predict(Data* test_data);
-    virtual knn::lazy_train(Data* trainData);
+    Knn(int kValue) : k(kValue) {};
+    ~Knn() {};
+    virtual vector<Sample> predict(Data* test_data);
 protected:
-    vector<pair<double, int>> Knn::getKnn(const Sample& sample);
-    virtual void Knn::predictSingle(const Sample& sample);
-    virtual void Knn::similarity(Sample a, Sample b);
-}
+    vector<pair<double, int>> getKnn(const Sample& sample);
+    virtual void predictSingle(const Sample& sample);
+    virtual double similarity(Sample a, Sample b);
+};
+
+#endif

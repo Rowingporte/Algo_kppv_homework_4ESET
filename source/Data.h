@@ -15,15 +15,15 @@ using std::endl;
 
 class Data {
     vector<Sample> _data;
-    int _nb_samples;
-    int _nb_features;
+    int _nbSamples;
+    int _nbFeatures;
 public:
-    Data() : _nb_samples(0), _nb_features(0) {};
+    Data() : _nbSamples(0), _nbFeatures(0) {};
     void load(const string& file_name);
     void aspire_les_donnees(std::ifstream& file);
     void add(int tag, const vector<double>& features);
     void toString() const;
-    int nbSamples() const { return _nb_samples; }
+    int nbSamples() const { return _nbSamples; }
     Sample operator[](int index);
     Data Scale(double factor) const;
 };
