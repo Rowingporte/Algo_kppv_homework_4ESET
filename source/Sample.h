@@ -3,24 +3,32 @@
 
 #include <iostream>
 #include <vector>
-
-using std::string;
-using std::vector;
-using std::cout;
-using std::endl;
+#include "FeatureVector.h" // Indispensable: Composition (UML)
 
 class Sample {
 private:
-    int _tag;
-    vector<double> _features;
+    int _tag;                // Etiquette (chiffre) réel déterminé
+    FeatureVector _features; // Objet FeatureVector contenant les données mathématiques
+
 public:
-    Sample(int tagValue, const vector<double>& featurevalues) : _tag(tagValue), _features(featurevalues) {};
-    int get_tag() const { return _tag; };
-    vector<double> get_features() const { return _features; };
+    // Constructeur
+    Sample(int tag, const std::vector<double>& data);
+
+    // Surcharge [] : Permet d'écrire sample[0] au lieu de sample.get_features()[0]
+    double operator[](int index) const;
+
+    // Crée nouveau sample avec valeurs multipliées
+    // Permet de ramener toutes les caractéristiques dans le même ordre de grandeur
+    Sample scale(double factor) const;
+    
+    // Afficher dans console
     void toString() const;
-    double operator[](int index);
-    Sample Scale(Sample s, double factor) const;
-    //int set_features(const vector<double>& feature);
+    
+    
+    // Getters
+    const FeatureVector& getFeatures() const;
+    int getTag() const;   
+    size_t size() const;
 };
 
 #endif

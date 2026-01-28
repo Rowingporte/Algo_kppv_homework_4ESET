@@ -1,25 +1,27 @@
 #ifndef CLASSIFICATIONREPORT_H
 #define CLASSIFICATIONREPORT_H
 
-#include <string>
 #include <vector>
-#include <sstream>
 #include <iostream>
-#include <iomanip>
-
-using std::string;
-using std::vector;
-using std::cout;
-using std::endl;
 
 class ClassificationReport {
-    vector<vector<int>> _confusion;
+    std::vector<std::vector<int>> _confusion;
     double _ok;
     double _nok;
-    int _nbTags;
+    int _nbTags; // nombre de classes (10 pour les chiffres, 3 pour JV)
+
 public:
-    ClassificationReport(int nbTags) : _nbTags(nbTags) { _confusion.resize(10, std::vector<int>(10, 0)); };
+    // Constructeur
+    ClassificationReport(int nbTags) : _nbTags(nbTags), _ok(0), _nok(0) { 
+        _confusion.resize(_nbTags, std::vector<int>(_nbTags, 0)); 
+    }
+    
     void toString() const;
+    void add(int real, int predicted);
+
+    // Getters
+    double getOk() const { return _ok; }
+    double getNok() const { return _nok; }
 };
 
 #endif
