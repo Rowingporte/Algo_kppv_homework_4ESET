@@ -13,8 +13,6 @@ public:
     // On redéfinit la méthode similarity pour Manhattan
     double similarity(const Sample& a, const Sample& b) const override;
 
-    // Pour Manhattan, on trie par distance (plus c'est petit, plus c'est proche)
-    // On peut utiliser getKnn de la classe mère si elle trie par ordre croissant.
     virtual ~KnnManhattan() = default;
 };
 

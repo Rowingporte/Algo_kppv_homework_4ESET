@@ -12,13 +12,12 @@ protected:
     int _k;
     const Data& _train_data;
 
-    // Méthode de calcul de proximité (abstraite)
+    // Méthode de calcul de proximité
     virtual double similarity(const Sample& a, const Sample& b) const = 0;
     
     // Détermine si on cherche le plus petit (distance) ou le plus grand (similarité)
     virtual bool isSimilarity() const { return false; }
 
-    // Logique interne commune
     std::vector<std::pair<double, int>> getKnn(const Sample& input) const;
 
 public:
@@ -27,7 +26,6 @@ public:
 
     int predict(const Sample& input) const;
 
-    // --- LA LIGNE MANQUANTE ICI ---
     void Comparaison(int k, const Data& train_data, const Data& test_data, int nbTags);
 };
 

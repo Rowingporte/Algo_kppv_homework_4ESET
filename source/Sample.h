@@ -3,12 +3,12 @@
 
 #include <iostream>
 #include <vector>
-#include "FeatureVector.h" // Indispensable: Composition (UML)
+#include "FeatureVector.h"
 
 class Sample {
 private:
     int _tag;                // Etiquette (chiffre) réel déterminé
-    FeatureVector _features; // Objet FeatureVector contenant les données mathématiques
+    FeatureVector _features; // Objet FeatureVector contenant les données
 
 public:
     // Constructeur
