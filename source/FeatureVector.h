@@ -5,34 +5,19 @@
 #include <cmath>
 #include <iostream>
 
+using std::vector;
+
 class FeatureVector {
-    private:
-        //double _norme; // Pas utile
-        std::vector<double> _vector; // Tableau dynamique qui stocke les valeurs réelles des caractéristiques
-    public:
-        // Constructeur par défaut
-        FeatureVector(int dimension = 0, double val = 0.0);
-        
-        // Constructeur de conversion (transforme une liste de nombres en objet FeatureVector)
-        FeatureVector(std::vector<double> data);
-
-        // Calcule racine carrée de la somme des carrés des éléments
-        double norme() const; 
-
-        // Surcharge de l'opérateur de multiplication
-        double operator*(const FeatureVector& other) const;
-        
-        // Surcharge de l'opérateur [] (lecture/écriture)
-        double& operator[](int index);
-        
-        // Surcharge de l'opérateur [] (lecture seule pour les objets const)
-        double operator[](int index) const;
-        
-        // Retourne taille du vecteur
-        size_t size() const;
-        
-        // Retourne le vecteur
-        const std::vector<double>& getVector() const;
+    vector<double> _vector;    // Stocke les features
+public:
+    FeatureVector(int dimension = 0, double val = 0.0) : _vector(dimension, val) { norme(); }
+    FeatureVector(vector<double> data) : _vector(data) { norme(); }
+    double norme() const;                                                   // Calcule la norme du vecteur (similarite cosinus)
+    double operator*(const FeatureVector& other) const;                     // Produit scalaire entre deux vecteurs
+    double& operator[](int index) { return _vector[index]; }                // Acces a une feacture par index (écriture)
+    const double& operator[](int index) const { return _vector[index]; }    // Idem en const (lecture)
+    const vector<double>& getVector() const { return _vector; }             // Vecteur des features
+    size_t size() const { return _vector.size(); }           // Recupere la taille du vecteur
 };
 
 #endif

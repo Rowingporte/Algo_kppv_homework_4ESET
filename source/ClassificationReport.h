@@ -19,9 +19,7 @@ class ClassificationReport {
     int _nbTags; 
 
 public:
-    ClassificationReport(int nbTags) : _nbTags(nbTags), _ok(0), _nok(0) { 
-        _confusion.resize(_nbTags, vector<int>(_nbTags, 0)); 
-    }
+    ClassificationReport(int nbTags) : _nbTags(nbTags), _ok(0), _nok(0) { _confusion.resize(_nbTags, vector<int>(_nbTags, 0)); }
     void toString() const;                  // Affiche le rapport de classification
     void compare(int real, int predicted);  // Compare les notes reel et predit et met a jour la matrice de confusion
     double getOk() const { return _ok; }    // Nombre de classifications correctes
