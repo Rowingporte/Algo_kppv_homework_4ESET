@@ -1,53 +1,34 @@
 #include "ClassificationReport.h"
-#include <iostream>
-#include <sstream>
-#include <iomanip>
-#include <string>
 
+// Affiche le rapport de classification
 void ClassificationReport::toString() const {
     std::stringstream ss;
-    double acc = 0.0;
-
-    ss << "\n--- Rapport de Classification ---\n";
-    ss << "Succes: " << _ok << " | Echecs: " << _nok << "\n";
-
+    double precision = 0.0;
     double total = _ok + _nok;
-    if (total > 0) { 
-        acc = (static_cast<double>(_ok) / total) * 100.0; 
-    }
 
-    ss << "Precision: " << std::fixed << std::setprecision(2) << acc << "%\n";
+    if (total > 0) { precision = _ok / total * 100; }
+    ss << "\n\nRapport de Classification:" << endl;
+    ss << "Succes: " << _ok << " et  Echecs: " << _nok << " => Precision: " << precision << endl;
+    ss << "\nMatrice de Confusion (Lignes: Reel, Colonnes: Preditiction):\n" << endl;
     
-    ss << "\nMatrice de Confusion (Lignes: Reel, Col: Predit):\n";
-    
-    // En-tête
+    // Entête du tableau de resultat
     ss << "    ";
-    for(int i = 0; i < _nbTags; i++) ss << std::setw(4) << i;
-    ss << "\n    " << std::string(_nbTags * 4 + 2, '-') << "\n";
+    for(int i = 0 ; i < _nbTags ; i++) { ss << std::setw(4) << i; }
+    ss << "\n    " << "------------------------------------------" << endl;
 
-    // Corps de la matrice
+    // Tableau de resultat
     for(int i = 0 ; i < _nbTags ; i++) {
-        // Aligne l'indice de ligne sur 2 caractères pour garder les barres verticales droites
         ss << std::setw(2) << i << " |"; 
-        for(int j = 0 ; j < _nbTags ; j++) {
-            ss << std::setw(4) << _confusion[i][j];
-        }
-        ss << "\n";
+        for(int j = 0 ; j < _nbTags ; j++) { ss << std::setw(4) << _confusion[i][j]; }
+        ss << endl;
     }
-    
-    std::cout << ss.str() << std::endl;
+    cout << ss.str() << endl;
 }
 
-void ClassificationReport::add(int real, int predicted) {
-    if (real < 0 || real >= _nbTags || predicted < 0 || predicted >= _nbTags) {
-        return; 
-    }
-
-    if (real == predicted) {
-        _ok++;
-    } else {
-        _nok++;
-    }
-    
-    _confusion[real][predicted]++;
+// Compare les notes reel et predit et met a jour la matrice de confusion
+void ClassificationReport::compare(int real, int predicted) {
+    if (real < 0 || real >= _nbTags || predicted < 0 || predicted >= _nbTags) { return; }   // Verification des valeurs
+    if (real == predicted) { _ok++;}    // Prediction correcte
+    else { _nok++; }
+    _confusion[real][predicted]++;      // Mise a jour de la matrice de confusion
 }

@@ -32,13 +32,13 @@ int main() {
 
     if (choix == 1) {
         // Chemins pour les chiffres
-        fichierTrain = "donnees/Test/train.svm";
-        fichierTest = "donnees/Test/test.svm"; 
+        fichierTrain = "../../donnees/Test/train.svm";
+        fichierTest = "../../donnees/Test/test.svm"; 
         nbClasses = 10;
     } else if (choix == 2) {
         // Chemins pour JV
-        fichierTrain = "donnees/Test/JV/train.ssvm";
-        fichierTest = "donnees/Test/JV/test.ssvm"; 
+        fichierTrain = "../../donnees/Test/JV/train.ssvm";
+        fichierTest = "../../donnees/Test/JV/test.ssvm"; 
         nbClasses = 3;
     } else {
         cout << "ERROR : Choix invalide." << endl;
@@ -91,7 +91,7 @@ int main() {
 
     for (int i = 0; i < dataTest.nbSamples(); i++) {
         int pred = (choixRapport == 1) ? algoEuclide.predict(dataTest[i]) : (choixRapport == 2) ? algoCosine.predict(dataTest[i]) : algoManhattan.predict(dataTest[i]);
-        report.add(dataTest[i].getTag(), pred);
+        report.compare(dataTest[i].getTag(), pred);
         if (i % 100 == 0) cout << "." << flush;
     }
 
