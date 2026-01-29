@@ -16,13 +16,13 @@ int main() {
     int kInitial = 3;
     int nbNote = 10;
 
-    string fichierTrain = "../../donnees/Test/train.svm";
-    string fichierTest = "../../donnees/Test/test.svm";
+    string fichierTrain = "donnees/Test/train.svm";
+    string fichierTest = "donnees/Test/test.svm";
     nbNote = 10;
 
-    /*fichierTrain = "../../donnees/Test/JV/train.ssvm";
-    fichierTest = "../../donnees/Test/JV/test.ssvm"; 
-    nbNote = 3;*/
+    //string fichierTrain = "donnees/Test/JV/train.ssvm";
+    //string fichierTest = "donnees/Test/JV/test.ssvm"; 
+    //nbNote = 3;
 
     // Etape 1 : Chargement des deux bases (Train et Test)
     cout << "Entrez le nombre de voisins (k) pour le test initial: ";
@@ -45,13 +45,13 @@ int main() {
     ClassificationReport report(nbNote);
 
     KnnEuclidean algoEuclide(kInitial, dataTrain);
-    report.affichage_algo(algoEuclide, dataTest, nbNote);
+    report.affichage_algo(algoEuclide, dataTest);
 
     KnnCosine algoCosine(kInitial, dataTrain);
-    report.affichage_algo(algoCosine, dataTest, nbNote);
+    report.affichage_algo(algoCosine, dataTest);
 
     KnnManhattan algoManhattan(kInitial, dataTrain);
-    report.affichage_algo(algoManhattan, dataTest, nbNote);
+    report.affichage_algo(algoManhattan, dataTest);
 
     return 0;
 }

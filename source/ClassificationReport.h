@@ -32,7 +32,7 @@ public:
     void compare(int real, int predicted);  // Compare les notes reel et predit et met a jour la matrice de confusion
     double getOk() const { return _ok; }    // Nombre de classifications correctes
     double getNok() const { return _nok; }  // Nombre de classifications incorrectes
-    void affichage_algo(Knn& algo, Data& dataTest, int nbNote); // Affichage pour un algo donne
+    void affichage_algo(Knn& algo, Data& dataTest); // Affichage pour un algo donne
 };
 
 #endif

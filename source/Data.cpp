@@ -33,22 +33,31 @@ void Data::aspire_les_donnees(std::ifstream& file) {
 
     for(int i = 0 ; i < temp_nb_samples ; i++) {
         if (!getline(file, line) || line.empty()) { break; }
-        vector<double> tabFeatures(_nb_features, 0.0);
+        
         std::stringstream ss(line);
         ss >> tag;      // Lit la note
+
+        int index = 0;
+        vector<double> tabFeatures(_nb_features, 0.0);   // Initialise le vecteur
 
         while(ss >> elem_line) {
             size_t pos = elem_line.find(':');
 
             // Format numero:feature
-            if (pos = string::npos) {
+            if (pos != string::npos) {
                 // Recupere la feature apres le ':' & conversion string en double
-                tabFeatures.push_back(std::stod(elem_line.substr(pos + 1)));
+                if (index < _nb_features) { 
+                    tabFeatures[index] = std::stod(elem_line.substr(pos + 1)); 
+                    index++;
+                }
             }
 
             // Format espace puis feature
             else {
-                tabFeatures.push_back(std::stod(elem_line));  // Recupere la feature
+                if (index < _nb_features) { 
+                    tabFeatures[index] = std::stod(elem_line); 
+                    index++;
+                }
             }
         }
         add(tag, tabFeatures);

@@ -7,13 +7,13 @@ void ClassificationReport::toString() const {
     double total = _ok + _nok;
 
     if (total > 0) { precision = _ok / total * 100; }
-    ss << "Succes: " << _ok << " et  Echecs: " << _nok << " => Precision: " << precision << "%" << endl;
+    ss << "Succes: " << _ok << " et Echecs: " << _nok << " => Precision: " << precision << "%" << endl;
     ss << "\nMatrice de Confusion (Lignes: Reel, Colonnes: Preditiction):\n" << endl;
     
     // Entête du tableau de resultat
     ss << "    ";
     for(int i = 0 ; i < _nbTags ; i++) { ss << std::setw(4) << i; }
-    ss << "\n    " << "------------------------------------------" << endl;
+    ss << "\n    " << std::string(_nbTags * 4 + 2, '-') << endl;
 
     // Tableau de resultat
     for(int i = 0 ; i < _nbTags ; i++) {
@@ -32,9 +32,9 @@ void ClassificationReport::compare(int real, int predicted) {
     _confusion[real][predicted]++;      // Mise a jour de la matrice de confusion
 }
     
-void ClassificationReport::affichage_algo(Knn& algo, Data& dataTest, int nbNote) {
-    ClassificationReport report(nbNote);
-    cout << "Calcul de l'algorithme: " << algo.getName() << "en cours..." << endl;
+void ClassificationReport::affichage_algo(Knn& algo, Data& dataTest) {
+    ClassificationReport report(_nbTags);
+    cout << "Calcul de l'algorithme: " << algo.getName() << " en cours..." << endl;
 
     for (int i = 0; i < dataTest.nbSamples(); i++) {
         int pred;
