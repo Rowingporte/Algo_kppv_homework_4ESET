@@ -1,115 +1,78 @@
 #include "Data.h"
+#include <iostream>
 #include <stdexcept>
 
 using namespace std;
 
-// Charge le fichier texte
 void Data::load(const string& file_name) {
     ifstream file(file_name);
-    
     if (!file) {
-        cerr << "ERREUR : Impossible d'ouvrir le fichier " << file_name << endl;
+        cerr << " [!] ERREUR : Impossible d'ouvrir " << file_name << endl;
         return;
     }
-
+    cout << " [+] Fichier ouvert : " << file_name << endl;
     aspire_les_donnees(file);
     file.close();
 }
 
-// En gros transforme données du fichier texte en objets utilisables par le code
 void Data::aspire_les_donnees(ifstream& file) {
-    int nb_samples_in_file;
-    int dimension;
-    
-    file >> nb_samples_in_file >> dimension;
-    _nb_features = dimension;
+    int nb_prevus, dim_prevue;
+    if (!(file >> nb_prevus >> dim_prevue)) return;
 
-    for (int i = 0; i < nb_samples_in_file; i++) { // Pour chaque exemple
+    _nb_features = dim_prevue;
+    cout << " [i] Lecture de " << nb_prevus << " exemples en dimension " << dim_prevue << "..." << endl;
+
+    for (int i = 0; i < nb_prevus; i++) {
         int tag;
-        file >> tag; // Extrait remier nombre de la ligne 
+        if (!(file >> tag)) break;
 
-        // Initialise un vecteur de la bonne taille
-        vector<double> features(_nb_features, 0.0); 
-
-        // On lit les caractéristiques une par une
+        vector<double> feats(_nb_features, 0.0);
         for (int j = 0; j < _nb_features; j++) {
             string s;
-            if (!(file >> s)) break; // Lit l'élément suivant et arrête quand il n'y en a plus
+            if (!(file >> s)) break;
 
-            size_t pos = s.find(':'); // position du caractère :
-
-            if (pos != string::npos) { // Si caractère : n'existe pas dans la chaîne, find() renvoie string::npos
+            size_t pos = s.find(':');
+            if (pos != string::npos) {
+                // Format JV (index:valeur)
+                int index = stoi(s.substr(0, pos));
+                double val = stod(s.substr(pos + 1));
+                if (index > 0 && index <= _nb_features) feats[index-1] = val;
                 
-                // FORMAT JV
-                int index = stoi(s.substr(0, pos)); // Coupe le texte avant le : (stoi : String TO Integer)
-                double val = stod(s.substr(pos + 1)); // Coupe le texte après le : (stod : String TO Double)
-
-
-                if (index > 0 && index <= _nb_features) {
-                    features[index-1] = val;
-                }
-                
-                // si un des \n ou \r ou fin de fichier, on arrête
-                if (file.peek() == '\n' || file.peek() == '\r' || file.eof()) {
-                    break;
-                }
-            }  
-            else {
-                // FORMAT CHIFFRES
-                features[j] = stod(s); // stod : String TO Double (on converti en double)
+                // Stop si fin de ligne pour les formats creux (sparse)
+                if (file.peek() == '\n' || file.peek() == '\r') break;
+            } else {
+                // Format Chiffres (valeurs simples)
+                feats[j] = stod(s);
             }
         }
-        add(tag, features);
+        add(tag, feats);
+
+        // Debug : voir la progression
+        if ((i + 1) % 1000 == 0) cout << "  > " << (i + 1) << " chargés..." << endl;
     }
+    cout << " [OK] Chargement fini : " << _nb_samples << " points en mémoire." << endl;
 }
 
-// Ajoute un Sample et met à jour le compteur
 void Data::add(int tag, const vector<double>& features) {
-    Sample s(tag, features);
-
-    _data.push_back(s);
-
-    _nb_samples = _data.size(); // Nombre d'échantillon
-
+    _data.push_back(Sample(tag, features));
+    _nb_samples = (int)_data.size(); 
 }
 
-// Affiche toute la data dans la console
 void Data::toString() const {
-    cout << "Nombre samples : " << _nb_samples << " exemples (Dimension: " << _nb_features << ")" << endl;
-    for (const Sample& sample : _data) {
-        sample.toString();
+    cout << "--- Aperçu des données ---" << endl;
+    int limit = (_nb_samples < 3) ? _nb_samples : 3;
+    for(int i = 0; i < limit; i++) {
+        cout << " [" << i << "] ";
+        _data[i].toString();
     }
 }
 
-// Accès à un sample spécifique (Lecture/Écriture)
 Sample& Data::operator[](int index) {
-    // Vérif si index bien dans la data
-    if (index < 0 || index >= _nb_samples) {
-        throw out_of_range("Index invalide dans Data::operator[]");
-    }
+    if (index < 0 || index >= _nb_samples) throw out_of_range("Index out");
     return _data[index];
 }
 
-// Accès à un sample spécifique (Lecture)
 const Sample& Data::operator[](int index) const {
-    if (index < 0 || index >= _nb_samples) {
-        throw out_of_range("Index invalide dans Data::operator[] (const)");
-    }
+    if (index < 0 || index >= _nb_samples) throw out_of_range("Index out");
     return _data[index];
-}
-
-// Normalisation des données
-Data Data::Scale(double factor) const {
-    Data scaledData;
-    
-    scaledData._nb_features = _nb_features; // On récup la dimension
-
-    // On parcourt chaque sample
-    for (const Sample& s : _data) {
-        Sample scaledSample = s.scale(factor); // On multiplie le sample par le facteur
-        
-        scaledData.add(scaledSample.getTag(), scaledSample.getFeatures().getVector()); // On l'ajoute à la nouvelle base de données
-    }
-
-    return scaledData;
 }

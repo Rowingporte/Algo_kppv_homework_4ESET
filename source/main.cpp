@@ -36,8 +36,8 @@ int main() {
         nbClasses = 10;
     } else if (choix == 2) {
         // Chemins pour JV
-        fichierTrain = "donnees/Test/JV/jv.data.ssvm";
-        fichierTest = "donnees/Test/JV/jv.test.ssvm"; 
+        fichierTrain = "donnees/Test/JV/train.ssvm";
+        fichierTest = "donnees/Test/JV/test.ssvm"; 
         nbClasses = 3;
     } else {
         cout << "ERROR : Choix invalide." << endl;
