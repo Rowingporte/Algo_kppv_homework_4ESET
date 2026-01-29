@@ -9,6 +9,6 @@ public:
     virtual ~KnnEuclidean() = default;
 
     double similarity(const Sample& a, const Sample& b) const override; // Pas de {} ici !
-}; // <--- Vérifie bien ce point-virgule
+}; 
 
 #endif

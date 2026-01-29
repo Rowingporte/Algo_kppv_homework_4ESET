@@ -48,15 +48,14 @@ class FeatureVector {
 }
 
 
-class Knn {
+abstract class Knn {
 	+Knn(int k, const Data& train_data)
 	+~Knn()
 	#isSimilarity() : bool {query}
 	#_train_data : const Data&
-	#similarity(const Sample& a, const Sample& b) : double {query}
+	#{abstract} similarity(const Sample& a, const Sample& b) : double {query}
 	#_k : int
-	+predict(const Sample& image) : int {query}
-	#predictSingle(const Sample& input) : int {query}
+	+predict(const Sample& input) : int {query}
 	#getKnn(const Sample& input) : std::vector<std::pair<double , int>> {query}
 	+Comparaison(int k, const Data& train_data, const Data& test_data, int nbTags) : void
 }
@@ -66,6 +65,13 @@ class KnnCosine {
 	+KnnCosine(int k, const Data& train_data)
 	+~KnnCosine()
 	+isSimilarity() : bool {query}
+	+similarity(const Sample& a, const Sample& b) : double {query}
+}
+
+
+class KnnEuclidean {
+	+KnnEuclidean(int k, const Data& train_data)
+	+~KnnEuclidean()
 	+similarity(const Sample& a, const Sample& b) : double {query}
 }
 
@@ -95,6 +101,9 @@ class Sample {
 /' Inheritance relationships '/
 
 Knn <|-- KnnCosine
+
+
+Knn <|-- KnnEuclidean
 
 
 Knn <|-- KnnManhattan
