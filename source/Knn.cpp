@@ -7,6 +7,7 @@
 
 using namespace std;
 
+// Calcul de la distance/similitude entre le sample de test et chaque donnée d'entraînement
 vector<pair<double, int>> Knn::getKnn(const Sample& input) const {
     vector<pair<double, int>> distances;
     for (int i = 0; i < _train_data.nbSamples(); i++) {
@@ -23,6 +24,7 @@ vector<pair<double, int>> Knn::getKnn(const Sample& input) const {
     return distances;
 }
 
+// Récupère les k voisins les plus proches et effectue un vote pondéré pour la prédiction finale
 int Knn::predict(const Sample& input) const {
     auto neighbors = getKnn(input);
     map<int, double> weightedVotes;
@@ -43,6 +45,7 @@ int Knn::predict(const Sample& input) const {
     return bestTag;
 }
 
+// Méthode de comparaison globale entre les trois algorithmes KNN
 void Knn::Comparaison(int k, const Data& train_data, const Data& test_data, int nbTags) {
     KnnEuclidean knnE(k, train_data);
     KnnCosine knnC(k, train_data);
@@ -50,7 +53,7 @@ void Knn::Comparaison(int k, const Data& train_data, const Data& test_data, int 
 
     ClassificationReport repE(nbTags), repC(nbTags), repM(nbTags);
 
-    cout << "\n[Running Global Comparison]..." << endl;
+    cout << "\n[Comparaison en cours]..." << endl;
     for (int i = 0; i < test_data.nbSamples(); i++) {
         repE.compare(test_data[i].getTag(), knnE.predict(test_data[i]));
         repC.compare(test_data[i].getTag(), knnC.predict(test_data[i]));
