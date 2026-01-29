@@ -2,10 +2,10 @@
 #include <iostream>
 #include <stdexcept>
 
-using namespace std;
-
+// Charge le fichier texte
 void Data::load(const string& file_name) {
-    ifstream file(file_name);
+    std::ifstream file(file_name);
+    
     if (!file) {
         cerr << " [!] ERREUR : Impossible d'ouvrir " << file_name << endl;
         return;
@@ -15,64 +15,76 @@ void Data::load(const string& file_name) {
     file.close();
 }
 
-void Data::aspire_les_donnees(ifstream& file) {
-    int nb_prevus, dim_prevue;
-    if (!(file >> nb_prevus >> dim_prevue)) return;
+// Recupere les samples et les features du fichier
+void Data::aspire_les_donnees(std::ifstream& file) {
+    int temp_nb_samples;
+    int tag;
+    vector<double> tabFeatures;
 
-    _nb_features = dim_prevue;
-    cout << " [i] Lecture de " << nb_prevus << " exemples en dimension " << dim_prevue << "..." << endl;
+    file >> temp_nb_samples >> _nb_features;    // Lit le nombre de samples et de features
 
-    for (int i = 0; i < nb_prevus; i++) {
-        int tag;
-        if (!(file >> tag)) break;
+    string line;
+    string elem_line;
+    getline(file, line);    // Saute la ligne vide (nombre de feature deja recupere)
 
-        vector<double> feats(_nb_features, 0.0);
-        for (int j = 0; j < _nb_features; j++) {
-            string s;
-            if (!(file >> s)) break;
+    for(int i = 0 ; i < temp_nb_samples ; i++) {
+        if (!getline(file, line) || line.empty()) { break; }
+        tabFeatures.clear();
+        std::stringstream ss(line);
+        ss >> tag;      // Lit la note
 
-            size_t pos = s.find(':');
-            if (pos != string::npos) {
-                // Format JV (index:valeur)
-                int index = stoi(s.substr(0, pos));
-                double val = stod(s.substr(pos + 1));
-                if (index > 0 && index <= _nb_features) feats[index-1] = val;
-                
-                // Stop si fin de ligne pour les formats creux (sparse)
-                if (file.peek() == '\n' || file.peek() == '\r') break;
-            } else {
-                // Format Chiffres (valeurs simples)
-                feats[j] = stod(s);
+        while(ss >> elem_line) {
+            size_t pos = elem_line.find(':');
+
+            // Format numero:feature
+            if (pos = string::npos) {
+                // Recupere la feature apres le ':' & conversion string en double
+                tabFeatures.push_back(std::stod(elem_line.substr(pos + 1)));
+            }
+
+            // Format espace puis feature
+            else {
+                tabFeatures.push_back(std::stod(elem_line));  // Recupere la feature
             }
         }
-        add(tag, feats);
-
-        // Debug : voir la progression
-        if ((i + 1) % 1000 == 0) cout << "  > " << (i + 1) << " chargés..." << endl;
+        add(tag, tabFeatures);
     }
-    cout << " [OK] Chargement fini : " << _nb_samples << " points en mémoire." << endl;
 }
 
+// Ajoute les samples à la base de donnees
 void Data::add(int tag, const vector<double>& features) {
-    _data.push_back(Sample(tag, features));
-    _nb_samples = (int)_data.size(); 
+    Sample s(tag, features);
+    _data.push_back(s);
+    _nb_samples = _data.size();     // Met à jour le nombre de samples
 }
 
+// Affiche la base de donnees
 void Data::toString() const {
-    cout << "--- Aperçu des données ---" << endl;
-    int limit = (_nb_samples < 3) ? _nb_samples : 3;
-    for(int i = 0; i < limit; i++) {
-        cout << " [" << i << "] ";
-        _data[i].toString();
+    cout << "Nombre samples: " << _nb_samples << " Nombre de features: " << _nb_features << endl;
+    cout << "Base de donnees:" << endl;
+    for (const Sample& sample : _data) {
+        sample.toString();
     }
 }
 
+// Acces aux samples par index (ecriture)
 Sample& Data::operator[](int index) {
-    if (index < 0 || index >= _nb_samples) throw out_of_range("Index out");
+    if (index < 0 || index >= _nb_samples) { throw std::out_of_range("Index invalide dans Data::operator[]"); }
     return _data[index];
 }
 
+// Acces aux samples par index (lecture)
 const Sample& Data::operator[](int index) const {
-    if (index < 0 || index >= _nb_samples) throw out_of_range("Index out");
+    if (index < 0 || index >= _nb_samples) { throw std::out_of_range("Index invalide dans Data::operator[] (const)"); }
     return _data[index];
+}
+
+// Creation d'une nouvelle base de donnees normalisee
+Data Data::Scale(double factor) const {
+    Data scaledData;
+    for (const Sample& s : _data) {
+        Sample scaledSample = s.scale(factor);      // Multiplication des samples par le facteur
+        scaledData.add(scaledSample.getTag(), scaledSample.getFeatures().getVector());  // Ajout dans la nouvelle base
+    }
+    return scaledData;
 }
