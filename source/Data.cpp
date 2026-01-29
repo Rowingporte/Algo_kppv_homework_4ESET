@@ -1,4 +1,5 @@
 #include "Data.h"
+#include <iostream>
 #include <stdexcept>
 
 // Charge le fichier texte
@@ -6,10 +7,10 @@ void Data::load(const string& file_name) {
     std::ifstream file(file_name);
     
     if (!file) {
-        cerr << "ERREUR : Impossible d'ouvrir le fichier " << file_name << endl;
+        cerr << " [!] ERREUR : Impossible d'ouvrir " << file_name << endl;
         return;
     }
-
+    cout << " [+] Fichier ouvert : " << file_name << endl;
     aspire_les_donnees(file);
     file.close();
 }

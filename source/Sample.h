@@ -28,7 +28,7 @@ public:
     // Getters
     const FeatureVector& getFeatures() const;
     int getTag() const;   
-    size_t size() const;
+    int size() const;
 };
 
 #endif

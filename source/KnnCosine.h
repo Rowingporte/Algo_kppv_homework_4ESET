@@ -5,18 +5,12 @@
 
 class KnnCosine : public Knn {
 public:
-    // Constructeur
-    KnnCosine(int k, const Data& data);
-
-    // Destructeur
+    // Le constructeur doit accepter et transmettre la Data d'entrainement
+    KnnCosine(int k, const Data& train_data);
     ~KnnCosine() = default;
 
-    // Surcharge des méthodes virtuelles
-    // On remplace le calcul de distance Euclidienne par la similarité Cosinus
     double similarity(const Sample& a, const Sample& b) const override;
-
-    // Pour le tri (false dans knn, true dans knnCosine)
-    bool isSimilarity() const override { return true; } 
+    bool isSimilarity() const override { return true; } // Cosinus est une similarité
 };
 
 #endif
