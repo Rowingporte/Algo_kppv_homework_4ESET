@@ -26,10 +26,7 @@ public:
 
     // La prédiction prend juste l'échantillon à tester (les données d'entrainement sont déjà stockées)
     int predict(const Sample& image) const;
-    
     virtual string getName() const { return "Knn Euclide"; }
-
-    
 };
 
 #endif

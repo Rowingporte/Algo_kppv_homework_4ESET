@@ -44,9 +44,3 @@ int Knn::predict(const Sample& input) const {
     }
     return bestTag;
 }
-
-int Knn::predict(const Sample& image) const {
-    return predictSingle(image);
-}
-
-

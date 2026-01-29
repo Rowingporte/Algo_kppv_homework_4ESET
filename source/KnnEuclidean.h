@@ -9,6 +9,7 @@ public:
     virtual ~KnnEuclidean() = default;
 
     double similarity(const Sample& a, const Sample& b) const override; // Pas de {} ici !
+    virtual string getName() const override { return "Knn Euclide"; }
 }; 
 
 #endif
