@@ -19,7 +19,6 @@ void Data::load(const string& file_name) {
 void Data::aspire_les_donnees(std::ifstream& file) {
     int temp_nb_samples;
     int tag;
-    vector<double> tabFeatures;
 
     file >> temp_nb_samples >> _nb_features;    // Lit le nombre de samples et de features
 
@@ -29,7 +28,7 @@ void Data::aspire_les_donnees(std::ifstream& file) {
 
     for(int i = 0 ; i < temp_nb_samples ; i++) {
         if (!getline(file, line) || line.empty()) { break; }
-        tabFeatures.clear();
+        vector<double> tabFeatures(_nb_features, 0.0);
         std::stringstream ss(line);
         ss >> tag;      // Lit la note
 
