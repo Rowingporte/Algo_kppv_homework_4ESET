@@ -13,8 +13,8 @@ Knn::Knn(int k, const Data& train_data) : _k(k), _train_data(train_data) {
 // Distance Euclidienne classique
 double Knn::similarity(const Sample& a, const Sample& b) const {
     double somme = 0.0;
-    size_t n = a.size();
-    for (size_t i = 0; i < n; i++) {
+    int n = a.size();
+    for (int i = 0; i < n; i++) {
         double diff = a[i] - b[i];
         somme += diff * diff;
     }
