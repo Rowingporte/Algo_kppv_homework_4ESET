@@ -22,8 +22,11 @@ int main() {
 
     // ETAPE 0 : Choix des Donnees
     cout << "1. Chiffres (digits.svm)" << endl;
-    cout << "2. Jeux Video (jv-train-small.ssvm)" << endl;
-    cout << "Entrez 1 ou 2 : ";
+    cout << "2. Jeux Video critique (jv-train-small.ssvm)" << endl;
+    cout << "3. Jeux Video critique (jv-train.ssvm)" << endl;
+    cout << "4. Test (test.ssvm)" << endl;
+    cout << "5. Test (train.ssvm)" << endl;
+    cout << "Entrez 1 à 5 : ";
     cin >> choix;
 
     cout << "Entrez le nombre de voisins (k) : ";
@@ -35,10 +38,19 @@ int main() {
     }
 
     if (choix == 1) {
-        nomFichier = "donnees/Digits/digits.svm";
+        nomFichier = "../../donnees/Digits/digits.svm";
         nbClasses = 10;
     } else if (choix == 2) {
-        nomFichier = "donnees/jeux_video-critiques/jv-train-small.ssvm";
+        nomFichier = "../../donnees/jeux_video-critiques/jv-train-small.ssvm";
+        nbClasses = 3;
+    } else if (choix == 3) {
+        nomFichier = "../../donnees/jeux_video-critiques/jv-train.ssvm";
+        nbClasses = 3;
+    } else if (choix == 4) {
+        nomFichier = "../../donnees/Test/test.svm";
+        nbClasses = 3;
+    } else if (choix == 5) {
+        nomFichier = "../../donnees/Test/train.svm";
         nbClasses = 3;
     } else {
         cout << "ERROR : Choix invalide, fermeture." << endl;
@@ -59,7 +71,7 @@ int main() {
         return 1;
     }
 
-
+/*
 
 
     cout << "==========================================" << endl;
@@ -202,6 +214,6 @@ int main() {
     cout << "\n==========================================" << endl;
     cout << "                   FIN                    " << endl;
     cout << "==========================================" << endl;
-
+*/
     return 0;
 }
