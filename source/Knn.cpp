@@ -1,148 +1,63 @@
 #include "Knn.h"
-#include "KnnCosine.h"           // <--- Pour KnnCosine
-#include "KnnManhattan.h"        // <--- Pour KnnManhattan
-#include "ClassificationReport.h" // <--- Pour ClassificationReport
-#include <iostream>              // <--- Pour std::cout
+#include "KnnEuclidean.h"
+#include "KnnCosine.h"
+#include "KnnManhattan.h"
+#include "ClassificationReport.h"
+#include <iostream>
 
-using namespace std;
-
-// Création d'un classifieur KNN qui prend en paramètre combien de voisins on veut (k) et les données d'entrainement (train_data)
-Knn::Knn(int k, const Data& train_data) : _k(k), _train_data(train_data) {
-}
-
-// Calcul de la distance Euclidienne entre deux samples
-double Knn::similarity(const Sample& a, const Sample& b) const {
-    double somme = 0.0;
-    int n = a.size();
-    for (int i = 0; i < n; i++) {
-        double diff = a[i] - b[i];
-        somme += diff * diff;
-    }
-    return std::sqrt(somme);
-}
-
-// Récupération des K voisins dans la base d'ENTRAINEMENT
-vector<pair<double, int>> Knn::getKnn(const Sample& input) const {
-    vector<pair<double, int>> distances;
-
-    // On compare l'input (Test) avec chaque image de l'apprentissage (_train_data)
+std::vector<std::pair<double, int>> Knn::getKnn(const Sample& input) const {
+    std::vector<std::pair<double, int>> distances;
     for (int i = 0; i < _train_data.nbSamples(); i++) {
-        const Sample& trainSample = _train_data[i];
-        double val = this->similarity(input, trainSample);
-        distances.push_back(make_pair(val, trainSample.getTag()));
+        double val = this->similarity(input, _train_data[i]);
+        distances.push_back({val, _train_data[i].getTag()});
     }
 
-    // Tri (Croissant pour distance, Décroissant pour similarité)
-    if (this->isSimilarity()) {
-        std::sort(distances.begin(), distances.end(), [](const pair<double, int>& a, const pair<double, int>& b) {
-            return a.first > b.first; 
-        });
-    } else {
-        std::sort(distances.begin(), distances.end(), [](const pair<double, int>& a, const pair<double, int>& b) {
-            return a.first < b.first;
-        });
-    }
-
-    // On garde les k premiers
-    if (distances.size() > (size_t)_k) {
-        distances.resize(_k);
-    }
+    auto comp = [this](const std::pair<double, int>& a, const std::pair<double, int>& b) {
+        return this->isSimilarity() ? a.first > b.first : a.first < b.first;
+    };
+    
+    std::sort(distances.begin(), distances.end(), comp);
+    if (distances.size() > (size_t)_k) distances.resize(_k);
     return distances;
 }
 
-/* Appel de la prédiction pour un seul sample 
-en le comparant aux k plus proches voisins 
-puis ajout dans une map pour le vote majoritaire, 
-vote fait en retournant l'étiquette la plus fréquente */
-
-int Knn::predictSingle(const Sample& input) const {
-    auto neighbors = getKnn(input); // Récupère les {distance, tag}
-    
-    // On utilise double pour stocker des poids (pas des entiers)
-    map<int, double> weightedVotes;
+int Knn::predict(const Sample& input) const {
+    auto neighbors = getKnn(input);
+    std::map<int, double> weightedVotes;
 
     for (const auto& p : neighbors) {
-        double dist = p.first;
-        int tag = p.second;
-
-        // Éviter la division par zéro si l'objet est exactement le même
-        double weight = 1.0 / (dist + 0.0001); 
-        
-        weightedVotes[tag] += weight; // On ajoute le poids au lieu de +1
+        double weight = 1.0 / (p.first + 0.0001);
+        weightedVotes[p.second] += weight;
     }
 
     int bestTag = -1;
     double maxWeight = -1.0;
-
-    for (const auto& v : weightedVotes) {
-        if (v.second > maxWeight) {
-            maxWeight = v.second;
-            bestTag = v.first;
+    for (auto const& [tag, weight] : weightedVotes) {
+        if (weight > maxWeight) {
+            maxWeight = weight;
+            bestTag = tag;
         }
     }
     return bestTag;
 }
 
-int Knn::predict(const Sample& image) const {
-    return predictSingle(image);
-}
-
 void Knn::Comparaison(int k, const Data& train_data, const Data& test_data, int nbTags) {
-    // 1. On crée les objets algos
-    Knn knn_euclidean(k, train_data);
-    KnnCosine knn_cosine(k, train_data);
-    KnnManhattan knn_manhattan(k, train_data);
+    KnnEuclidean knnE(k, train_data);
+    KnnCosine knnC(k, train_data);
+    KnnManhattan knnM(k, train_data);
 
-    // 2. On crée les rapports (en passant le nombre de classes/tags)
-    ClassificationReport report_euclidean(nbTags);
-    ClassificationReport report_cosine(nbTags);
-    ClassificationReport report_manhattan(nbTags);
+    ClassificationReport repE(nbTags), repC(nbTags), repM(nbTags);
 
-    // 3. ON REMPLACE LE .test() PAR UNE BOUCLE
-    std::cout << "Calculs en cours..." << std::endl;
+    std::cout << "\n[Running Global Comparison]..." << std::endl;
     for (int i = 0; i < test_data.nbSamples(); i++) {
-        const Sample& s = test_data[i];
-
-        // Pour Euclide
-        int predEuclide = knn_euclidean.predict(s);
-        report_euclidean.compare(s.getTag(), predEuclide);
-
-        // Pour Cosine
-        int predCosine = knn_cosine.predict(s);
-        report_cosine.compare(s.getTag(), predCosine);
-
-        // Pour Manhattan
-        int predManhattan = knn_manhattan.predict(s);
-        report_manhattan.compare(s.getTag(), predManhattan);
+        repE.compare(test_data[i].getTag(), knnE.predict(test_data[i]));
+        repC.compare(test_data[i].getTag(), knnC.predict(test_data[i]));
+        repM.compare(test_data[i].getTag(), knnM.predict(test_data[i]));
+        if (i % 100 == 0) std::cout << "." << std::flush;
     }
 
-    // Affichage des rapports
-    std::cout << "\nTest méthode Euclidienne KNN :" << std::endl;
-    report_euclidean.toString();
-
-    std::cout << "\nTest méthode Cosine KNN :" << std::endl;
-    report_cosine.toString();
-
-    std::cout << "\nTest méthode Manhattan KNN :" << std::endl;
-    report_manhattan.toString();
-
-    double ScoreEuclidean = report_euclidean.getOk() / (report_euclidean.getOk() + report_euclidean.getNok());
-    double ScoreCosine = report_cosine.getOk() / (report_cosine.getOk() + report_cosine.getNok());
-    double ScoreManhattan = report_manhattan.getOk() / (report_manhattan.getOk() + report_manhattan.getNok());
-
-    std::cout << "\n=== Comparaison ===" << std::endl;
-    std::cout << "SCore KNN Euclidien : " << ScoreEuclidean * 100 << "%" << std::endl;
-    std::cout << "SCore KNN Cosine: " << ScoreCosine * 100 << "%" << std::endl;
-    std::cout << "SCore KNN Manhattan: " << ScoreManhattan * 100 << "%" << std::endl;
-
-    if (ScoreManhattan > ScoreCosine && ScoreManhattan > ScoreEuclidean) {
-        std::cout << "RESULTAT : l'algorithme Manhattan est le plus performant pour k = " << k << std::endl;
-    } else if (ScoreCosine > ScoreEuclidean) {
-        std::cout << "RESULTAT : l'algorithme Cosine est le plus performant pour k = " << k << std::endl;
-    } else if (ScoreCosine < ScoreEuclidean) {
-        std::cout << "RESULTAT : l'algorithme Euclidien est le plus performant pour k = " << k << std::endl;
-    } else {
-        std::cout << "RESULTAT : Les deux algorithmes ont la même performance pour k = " << k <<std::endl;
-    }
+    std::cout << "\n\n=== RÉSULTATS POUR LES SLIDES ===" << std::endl;
+    std::cout << "--- EUCLIDE ---" << std::endl; repE.toString();
+    std::cout << "\n--- COSINE ---" << std::endl; repC.toString();
+    std::cout << "\n--- MANHATTAN ---" << std::endl; repM.toString();
 }
-

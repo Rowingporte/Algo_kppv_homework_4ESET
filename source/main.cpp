@@ -3,6 +3,7 @@
 #include <string>
 #include "Data.h"
 #include "Knn.h"
+#include "KnnEuclidean.h"
 #include "KnnCosine.h"
 #include "KnnManhattan.h"
 #include "Sample.h"
@@ -68,7 +69,7 @@ int main() {
     dataTest[0].toString();
 
     // ETAPE 3 & 4 : Initialisation des Algos avec la base d'ENTRAINEMENT
-    Knn algoEuclide(kInitial, dataTrain);
+    KnnEuclidean algoEuclidean(kInitial, dataTrain);
     KnnCosine algoCosine(kInitial, dataTrain);
     KnnManhattan algoManhattan(kInitial, dataTrain);
 
@@ -76,7 +77,7 @@ int main() {
     Sample& sampleTest = dataTest[0];
     cout << "\n[TEST] Prediction sur le 1er exemplaire du fichier TEST" << endl;
     cout << "Vrai Tag : " << sampleTest.getTag() << endl;
-    cout << "Prediction Euclide : " << algoEuclide.predict(sampleTest) << endl;
+    cout << "Prediction Euclide : " << algoEuclidean.predict(sampleTest) << endl;
     cout << "Prediction Cosine  : " << algoCosine.predict(sampleTest) << endl;
     cout << "Prediction Manhattan : " << algoManhattan.predict(sampleTest) << endl;
     cout << "\n[ETAPE 4] Comparaison des algorithmes KNN sur la base de TEST pour k = " << kInitial << "..." << endl;
@@ -94,14 +95,14 @@ int main() {
 
     if (choixRapport == 4) {
         // Appelle ta méthode qui fait défiler tous les algos d'un coup
-        algoEuclide.Comparaison(kInitial, dataTrain, dataTest, nbClasses);
+        algoEuclidean.Comparaison(kInitial, dataTrain, dataTest, nbClasses);
     } else {
         ClassificationReport report(nbClasses);
         cout << "Calcul en cours..." << endl;
 
         for (int i = 0; i < dataTest.nbSamples(); i++) {
             int pred;
-            if (choixRapport == 1) pred = algoEuclide.predict(dataTest[i]);
+            if (choixRapport == 1) pred = algoEuclidean.predict(dataTest[i]);
             else if (choixRapport == 2) pred = algoCosine.predict(dataTest[i]);
             else pred = algoManhattan.predict(dataTest[i]);
 

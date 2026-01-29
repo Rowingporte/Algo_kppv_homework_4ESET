@@ -1,0 +1,125 @@
+@startuml
+
+
+
+
+
+/' Objects '/
+
+class ClassificationReport {
+	+ClassificationReport(int nbTags)
+	-_nok : double
+	-_ok : double
+	+getNok() : double {query}
+	+getOk() : double {query}
+	-_nbTags : int
+	-_confusion : vector<vector<int>>
+	+compare(int real, int predicted) : void
+	+toString() : void {query}
+}
+
+
+class Data {
+	+Data()
+	+Scale(double factor) : Data {query}
+	+operator[](int index) : Sample&
+	+operator[](int index) : Sample& {query}
+	-_nb_features : int
+	-_nb_samples : int
+	+nbSamples() : int {query}
+	-_data : vector<Sample>
+	+add(int tag, const vector<double>& features) : void
+	+aspire_les_donnees(std::ifstream& file) : void
+	+load(string file_name) : void
+	+toString() : void {query}
+}
+
+
+class FeatureVector {
+	+FeatureVector(int dimension, double val)
+	+FeatureVector(vector<double> data)
+	+norme() : double {query}
+	+operator*(const FeatureVector& other) : double {query}
+	+operator[](int index) : double&
+	+operator[](int index) : double& {query}
+	+size() : size_t {query}
+	-_vector : vector<double>
+	+getVector() : vector<double>& {query}
+}
+
+
+class Knn {
+	+Knn(int k, const Data& train_data)
+	+~Knn()
+	#isSimilarity() : bool {query}
+	#_train_data : const Data&
+	#similarity(const Sample& a, const Sample& b) : double {query}
+	#_k : int
+	+predict(const Sample& image) : int {query}
+	#predictSingle(const Sample& input) : int {query}
+	#getKnn(const Sample& input) : std::vector<std::pair<double , int>> {query}
+	+Comparaison(int k, const Data& train_data, const Data& test_data, int nbTags) : void
+}
+
+
+class KnnCosine {
+	+KnnCosine(int k, const Data& train_data)
+	+~KnnCosine()
+	+isSimilarity() : bool {query}
+	+similarity(const Sample& a, const Sample& b) : double {query}
+}
+
+
+class KnnManhattan {
+	+KnnManhattan(int k, const Data& train_data)
+	+similarity(const Sample& a, const Sample& b) : double {query}
+}
+
+
+class Sample {
+	+Sample(int tag, const std::vector<double>& data)
+	-_features : FeatureVector
+	+getFeatures() : FeatureVector& {query}
+	+scale(double factor) : Sample {query}
+	+operator[](int index) : double {query}
+	-_tag : int
+	+getTag() : int {query}
+	+size() : int {query}
+	+toString() : void {query}
+}
+
+
+
+
+
+/' Inheritance relationships '/
+
+Knn <|-- KnnCosine
+
+
+Knn <|-- KnnManhattan
+
+
+
+
+
+/' Aggregation relationships '/
+
+Data *-- Sample
+
+
+Knn *-- Data
+
+
+Sample *-- FeatureVector
+
+
+
+
+
+
+/' Nested objects '/
+
+
+
+@enduml
