@@ -10,6 +10,7 @@ public:
     ~KnnCosine() = default;
 
     double similarity(const Sample& a, const Sample& b) const override;
+    bool isSimilarity() const override { return true; } // Cosinus est une similarité
 };
 
 #endif

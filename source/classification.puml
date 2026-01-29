@@ -78,6 +78,7 @@ class KnnEuclidean {
 
 class KnnManhattan {
 	+KnnManhattan(int k, const Data& train_data)
+	+~KnnManhattan()
 	+similarity(const Sample& a, const Sample& b) : double {query}
 }
 
