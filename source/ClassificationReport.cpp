@@ -8,7 +8,7 @@ void ClassificationReport::toString() const {
 
     if (total > 0) { precision = _ok / total * 100; }
     ss << "\n\nRapport de Classification:" << endl;
-    ss << "Succes: " << _ok << " et  Echecs: " << _nok << " => Precision: " << precision << endl;
+    ss << "Succes: " << _ok << " et  Echecs: " << _nok << " => Precision: " << precision << "%" << endl;
     ss << "\nMatrice de Confusion (Lignes: Reel, Colonnes: Preditiction):\n" << endl;
     
     // Entête du tableau de resultat

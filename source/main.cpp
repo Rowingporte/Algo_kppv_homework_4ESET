@@ -32,13 +32,13 @@ int main() {
 
     if (choix == 1) {
         // Chemins pour les chiffres
-        fichierTrain = "../../donnees/Test/train.svm";
-        fichierTest = "../../donnees/Test/test.svm"; 
+        fichierTrain = "donnees/Test/train.svm";
+        fichierTest = "donnees/Test/test.svm"; 
         nbClasses = 10;
     } else if (choix == 2) {
         // Chemins pour JV
-        fichierTrain = "../../donnees/Test/JV/train.ssvm";
-        fichierTest = "../../donnees/Test/JV/test.ssvm"; 
+        fichierTrain = "donnees/Test/JV/train.ssvm";
+        fichierTest = "donnees/Test/JV/test.ssvm"; 
         nbClasses = 3;
     } else {
         cout << "ERROR : Choix invalide." << endl;
