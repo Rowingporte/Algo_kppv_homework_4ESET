@@ -1,20 +1,16 @@
 #include "Knn.h"
-#include <cmath>
-#include <algorithm>
-#include <map>
-#include <vector>
 
 using namespace std;
 
-// Constructeur : on initialise la référence _train_data
+// Création d'un classifieur KNN qui prend en paramètre combien de voisins on veut (k) et les données d'entrainement (train_data)
 Knn::Knn(int k, const Data& train_data) : _k(k), _train_data(train_data) {
 }
 
-// Distance Euclidienne classique
+// Calcul de la distance Euclidienne entre deux samples
 double Knn::similarity(const Sample& a, const Sample& b) const {
     double somme = 0.0;
-    size_t n = a.size();
-    for (size_t i = 0; i < n; i++) {
+    int n = a.size();
+    for (int i = 0; i < n; i++) {
         double diff = a[i] - b[i];
         somme += diff * diff;
     }
@@ -49,6 +45,11 @@ vector<pair<double, int>> Knn::getKnn(const Sample& input) const {
     }
     return distances;
 }
+
+/* Appel de la prédiction pour un seul sample 
+en le comparant aux k plus proches voisins 
+puis ajout dans une map pour le vote majoritaire, 
+vote fait en retournant l'étiquette la plus fréquente */
 
 int Knn::predictSingle(const Sample& input) const {
     auto neighbors = getKnn(input);

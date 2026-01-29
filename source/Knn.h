@@ -2,8 +2,11 @@
 #define KNN_H
 
 #include "Data.h"
-#include <vector>
 #include <utility>
+#include <cmath>
+#include <algorithm>
+#include <map>
+#include <vector>
 
 class Knn {
 protected:

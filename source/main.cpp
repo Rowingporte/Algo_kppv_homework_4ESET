@@ -4,6 +4,7 @@
 #include "Data.h"
 #include "Knn.h"
 #include "KnnCosine.h"
+#include "KnnManhattan.h"
 #include "Sample.h"
 #include "ClassificationReport.h"
 
@@ -69,6 +70,7 @@ int main() {
     // ETAPE 3 & 4 : Initialisation des Algos avec la base d'ENTRAINEMENT
     Knn algoEuclide(kInitial, dataTrain);
     KnnCosine algoCosine(kInitial, dataTrain);
+    KnnManhattan algoManhattan(kInitial, dataTrain);
 
     // Test sur le premier exemple du fichier de TEST
     Sample& sampleTest = dataTest[0];
@@ -76,10 +78,11 @@ int main() {
     cout << "Vrai Tag : " << sampleTest.getTag() << endl;
     cout << "Prediction Euclide : " << algoEuclide.predict(sampleTest) << endl;
     cout << "Prediction Cosine  : " << algoCosine.predict(sampleTest) << endl;
+    cout << "Prediction Manhattan : " << algoManhattan.predict(sampleTest) << endl;
 
     // ETAPE 5 : Rapport de Classification
     cout << "\n==========================================" << endl;
-    cout << "[ETAPE 5] Rapport final sur quel algo ? (1: Euclide, 2: Cosinus) : ";
+    cout << "[ETAPE 5] Rapport final sur quel algo ? (1: Euclide, 2: Cosinus, 3: Manhattan) : ";
     int choixRapport;
     cin >> choixRapport;
 
@@ -87,7 +90,7 @@ int main() {
     cout << "Calcul du rapport sur la base de TEST..." << endl;
 
     for (int i = 0; i < dataTest.nbSamples(); i++) {
-        int pred = (choixRapport == 1) ? algoEuclide.predict(dataTest[i]) : algoCosine.predict(dataTest[i]);
+        int pred = (choixRapport == 1) ? algoEuclide.predict(dataTest[i]) : (choixRapport == 2) ? algoCosine.predict(dataTest[i]) : algoManhattan.predict(dataTest[i]);
         report.compare(dataTest[i].getTag(), pred);
         if (i % 100 == 0) cout << "." << flush;
     }
@@ -98,6 +101,5 @@ int main() {
     cout << "==========================================" << endl;
     cout << "                   FIN                    " << endl;
     cout << "==========================================" << endl;
-
     return 0;
 }
