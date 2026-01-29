@@ -79,23 +79,38 @@ int main() {
     cout << "Prediction Euclide : " << algoEuclide.predict(sampleTest) << endl;
     cout << "Prediction Cosine  : " << algoCosine.predict(sampleTest) << endl;
     cout << "Prediction Manhattan : " << algoManhattan.predict(sampleTest) << endl;
+    cout << "\n[ETAPE 4] Comparaison des algorithmes KNN sur la base de TEST pour k = " << kInitial << "..." << endl;
 
     // ETAPE 5 : Rapport de Classification
     cout << "\n==========================================" << endl;
-    cout << "[ETAPE 5] Rapport final sur quel algo ? (1: Euclide, 2: Cosinus, 3: Manhattan) : ";
+    cout << "Que voulez-vous faire ?" << endl;
+    cout << "1. Rapport detaille Euclide" << endl;
+    cout << "2. Rapport detaille Cosinus" << endl;
+    cout << "3. Rapport detaille Manhattan" << endl;
+    cout << "4. COMPARAISON GLOBALE (pour les slides)" << endl;
+    cout << "Votre choix : ";
     int choixRapport;
     cin >> choixRapport;
 
-    ClassificationReport report(nbClasses);
-    cout << "Calcul du rapport sur la base de TEST..." << endl;
+    if (choixRapport == 4) {
+        // Appelle ta méthode qui fait défiler tous les algos d'un coup
+        algoEuclide.Comparaison(kInitial, dataTrain, dataTest, nbClasses);
+    } else {
+        ClassificationReport report(nbClasses);
+        cout << "Calcul en cours..." << endl;
 
-    for (int i = 0; i < dataTest.nbSamples(); i++) {
-        int pred = (choixRapport == 1) ? algoEuclide.predict(dataTest[i]) : (choixRapport == 2) ? algoCosine.predict(dataTest[i]) : algoManhattan.predict(dataTest[i]);
-        report.compare(dataTest[i].getTag(), pred);
-        if (i % 100 == 0) cout << "." << flush;
+        for (int i = 0; i < dataTest.nbSamples(); i++) {
+            int pred;
+            if (choixRapport == 1) pred = algoEuclide.predict(dataTest[i]);
+            else if (choixRapport == 2) pred = algoCosine.predict(dataTest[i]);
+            else pred = algoManhattan.predict(dataTest[i]);
+
+            report.compare(dataTest[i].getTag(), pred);
+            if (i % 100 == 0) cout << "." << flush;
+        }
+        cout << endl;
+        report.toString(); // Affiche la matrice et le % final
     }
-
-    report.toString();
 
   
     cout << "==========================================" << endl;

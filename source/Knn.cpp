@@ -91,10 +91,12 @@ void Knn::Comparaison(int k, const Data& train_data, const Data& test_data, int 
     // 1. On crée les objets algos
     Knn knn_euclidean(k, train_data);
     KnnCosine knn_cosine(k, train_data);
+    KnnManhattan knn_manhattan(k, train_data);
 
     // 2. On crée les rapports (en passant le nombre de classes/tags)
     ClassificationReport report_euclidean(nbTags);
     ClassificationReport report_cosine(nbTags);
+    ClassificationReport report_manhattan(nbTags);
 
     // 3. ON REMPLACE LE .test() PAR UNE BOUCLE
     std::cout << "Calculs en cours..." << std::endl;
@@ -108,26 +110,37 @@ void Knn::Comparaison(int k, const Data& train_data, const Data& test_data, int 
         // Pour Cosine
         int predCosine = knn_cosine.predict(s);
         report_cosine.compare(s.getTag(), predCosine);
+
+        // Pour Manhattan
+        int predManhattan = knn_manhattan.predict(s);
+        report_manhattan.compare(s.getTag(), predManhattan);
     }
 
-    // 4. On affiche les résultats (Option A : toString gère le cout)
+    // Affichage des rapports
     std::cout << "\nTest méthode Euclidienne KNN :" << std::endl;
     report_euclidean.toString();
 
     std::cout << "\nTest méthode Cosine KNN :" << std::endl;
     report_cosine.toString();
 
+    std::cout << "\nTest méthode Manhattan KNN :" << std::endl;
+    report_manhattan.toString();
+
     double ScoreEuclidean = report_euclidean.getOk() / (report_euclidean.getOk() + report_euclidean.getNok());
     double ScoreCosine = report_cosine.getOk() / (report_cosine.getOk() + report_cosine.getNok());
+    double ScoreManhattan = report_manhattan.getOk() / (report_manhattan.getOk() + report_manhattan.getNok());
 
     std::cout << "\n=== Comparaison ===" << std::endl;
     std::cout << "SCore KNN Euclidien : " << ScoreEuclidean * 100 << "%" << std::endl;
     std::cout << "SCore KNN Cosine: " << ScoreCosine * 100 << "%" << std::endl;
+    std::cout << "SCore KNN Manhattan: " << ScoreManhattan * 100 << "%" << std::endl;
 
-    if (ScoreCosine > ScoreEuclidean) {
-        std::cout << "RESULTAT : l'algorithme Cosine est plus performant pour k = " << k << std::endl;
+    if (ScoreManhattan > ScoreCosine && ScoreManhattan > ScoreEuclidean) {
+        std::cout << "RESULTAT : l'algorithme Manhattan est le plus performant pour k = " << k << std::endl;
+    } else if (ScoreCosine > ScoreEuclidean) {
+        std::cout << "RESULTAT : l'algorithme Cosine est le plus performant pour k = " << k << std::endl;
     } else if (ScoreCosine < ScoreEuclidean) {
-        std::cout << "RESULTAT : l'algorithme Euclidien est plus performant pour k = " << k << std::endl;
+        std::cout << "RESULTAT : l'algorithme Euclidien est le plus performant pour k = " << k << std::endl;
     } else {
         std::cout << "RESULTAT : Les deux algorithmes ont la même performance pour k = " << k <<std::endl;
     }
