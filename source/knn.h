@@ -7,29 +7,23 @@
 
 class Knn {
 protected:
-    int _k;                    // Nombre de voisins à considérer
-    const Data& _lazy_train;   // La référence vers la base de données (Nommé _lazy_train sur l'UML)
-    
-    // Trouve les K plus proches voisins : retourne liste de <Distance, Étiquette>
+    int _k;
+    const Data& _train_data; // REFERENCE vers les données d'apprentissage
+
+    // Méthodes internes
     std::vector<std::pair<double, int>> getKnn(const Sample& input) const;
-
-    // Fait la prédiction pour uhn seul sample
     int predictSingle(const Sample& input) const;
-
-    // Calcule la distance euclidienne entre deux images (virtual pour KnnCosine)
+    
+    // Virtuelles pour être modifiées par KnnCosine
     virtual double similarity(const Sample& a, const Sample& b) const;
-
-    // Pour le tri (false dans knn, true dans knnCosine)
-    virtual bool isSimilarity() const { return false; } 
+    virtual bool isSimilarity() const { return false; } // false = distance (plus petit mieux), true = similarité (plus grand mieux)
 
 public:
-    // Constructeur
-    Knn(int k, const Data& data);
-
-    // Destructeur (virtual pour KnnCosine)
+    // Le constructeur prend les données d'ENTRAINEMENT
+    Knn(int k, const Data& train_data);
     virtual ~Knn() = default;
 
-    // Devine étiquette (chiffre) de l'image
+    // La prédiction prend juste l'échantillon à tester (les données d'entrainement sont déjà stockées)
     int predict(const Sample& image) const;
 };
 

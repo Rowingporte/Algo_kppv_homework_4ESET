@@ -9,7 +9,7 @@ void ClassificationReport::toString() const {
 
     ss << "\n--- Rapport de Classification ---\n";
     // Affichage des compteurs de performance 
-    ss << "Succes: " << (int)_ok << " | Echecs: " << (int)_nok << "\n";
+    ss << "Succes: " << _ok << " | Echecs: " << _nok << "\n";
 
     // Calcul de la précision (pourcentage de bonne classification) [cite: 21, 109]
     // Correction : division flottante pour éviter d'obtenir toujours 0.00%
@@ -53,6 +53,6 @@ void ClassificationReport::add(int real, int predicted) {
         _nok++;
     }
     
-    // Enregistrement dans la matrice de confusion [cite: 86]
+    // Enregistrement dans la matrice de confusion
     _confusion[real][predicted]++;
 }
