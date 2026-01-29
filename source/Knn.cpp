@@ -1,8 +1,4 @@
 #include "Knn.h"
-#include <cmath>
-#include <algorithm>
-#include <map>
-#include <vector>
 
 using namespace std;
 
