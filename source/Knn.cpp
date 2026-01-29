@@ -52,19 +52,27 @@ puis ajout dans une map pour le vote majoritaire,
 vote fait en retournant l'étiquette la plus fréquente */
 
 int Knn::predictSingle(const Sample& input) const {
-    auto neighbors = getKnn(input);
+    auto neighbors = getKnn(input); // Récupère les {distance, tag}
     
-    // Vote majoritaire
-    map<int, int> votes;
+    // On utilise double pour stocker des poids (pas des entiers)
+    map<int, double> weightedVotes;
+
     for (const auto& p : neighbors) {
-        votes[p.second]++;
+        double dist = p.first;
+        int tag = p.second;
+
+        // Éviter la division par zéro si l'objet est exactement le même
+        double weight = 1.0 / (dist + 0.0001); 
+        
+        weightedVotes[tag] += weight; // On ajoute le poids au lieu de +1
     }
 
     int bestTag = -1;
-    int maxVotes = -1;
-    for (const auto& v : votes) {
-        if (v.second > maxVotes) {
-            maxVotes = v.second;
+    double maxWeight = -1.0;
+
+    for (const auto& v : weightedVotes) {
+        if (v.second > maxWeight) {
+            maxWeight = v.second;
             bestTag = v.first;
         }
     }
