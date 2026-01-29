@@ -15,6 +15,7 @@ public:
 
     // Pour Manhattan, on trie par distance (plus c'est petit, plus c'est proche)
     // On peut utiliser getKnn de la classe mère si elle trie par ordre croissant.
+    virtual ~KnnManhattan() = default;
     virtual string getName() const override { return "Knn Manhattan"; }
 };
 

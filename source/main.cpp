@@ -3,6 +3,7 @@
 #include <string>
 #include "Data.h"
 #include "Knn.h"
+#include "KnnEuclidean.h"
 #include "KnnCosine.h"
 #include "KnnManhattan.h"
 #include "Sample.h"
@@ -43,7 +44,7 @@ int main() {
 
     ClassificationReport report(nbNote);
 
-    Knn algoEuclide(kInitial, dataTrain);
+    KnnEuclidean algoEuclide(kInitial, dataTrain);
     report.affichage_algo(algoEuclide, dataTest, nbNote);
 
     KnnCosine algoCosine(kInitial, dataTrain);
