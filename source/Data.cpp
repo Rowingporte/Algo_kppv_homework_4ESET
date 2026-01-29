@@ -22,6 +22,11 @@ void Data::aspire_les_donnees(std::ifstream& file) {
 
     file >> temp_nb_samples >> _nb_features;    // Lit le nombre de samples et de features
 
+    if (temp_nb_samples <= 0 || _nb_features <= 0) {
+        cerr << " [!] ERREUR : Nombre de samples ou de features invalide." << endl;
+        return;
+    }
+
     string line;
     string elem_line;
     getline(file, line);    // Saute la ligne vide (nombre de feature deja recupere)

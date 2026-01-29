@@ -11,6 +11,7 @@ public:
 
     double similarity(const Sample& a, const Sample& b) const override;
     bool isSimilarity() const override { return true; } // Cosinus est une similarité
+    virtual string getName() const override { return "Knn Cosine"; }
 };
 
 #endif

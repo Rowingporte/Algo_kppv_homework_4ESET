@@ -29,7 +29,7 @@ public:
     // La prédiction prend juste l'échantillon à tester (les données d'entrainement sont déjà stockées)
     int predict(const Sample& image) const;
     
-    void Comparaison(int k, const Data& train_data, const Data& test_data, int nbTags);
+    virtual string getName() const { return "Knn Euclide"; }
 
     
 };
