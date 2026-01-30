@@ -7,10 +7,10 @@ void Data::load(const string& file_name) {
     std::ifstream file(file_name);
     
     if (!file) {
-        cerr << " [!] ERREUR : Impossible d'ouvrir " << file_name << endl;
+        cerr << "ERREUR : Impossible d'ouvrir " << file_name << endl;
         return;
     }
-    cout << " [+] Fichier ouvert : " << file_name << endl;
+    cout << "Fichier ouvert : " << file_name << endl;
     aspire_les_donnees(file);
     file.close();
 }
@@ -23,7 +23,7 @@ void Data::aspire_les_donnees(std::ifstream& file) {
     file >> temp_nb_samples >> _nb_features;    // Lit le nombre de samples et de features
 
     if (temp_nb_samples <= 0 || _nb_features <= 0) {
-        cerr << " [!] ERREUR : Nombre de samples ou de features invalide." << endl;
+        cerr << "ERREUR : Nombre de samples ou de features invalide" << endl;
         return;
     }
 
